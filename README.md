@@ -12,14 +12,28 @@ Works for the Claude Code CLI and the Claude desktop app (Code tab). Note: quitt
 
 ## Install with Claude
 
-Paste this into Claude Code:
+Turn on your Tailscale exit node first, then paste this into Claude Code:
 
-> Install https://github.com/OWNER/claude-tailscale-guard — follow the "Instructions for Claude" in its README.
+```text
+Install claude-tailscale-guard from https://github.com/arneanne/claude-tailscale-guard.
+Clone it to a temporary folder, read its INSTALL.md, and follow every step in order.
+Confirm the exit node with me before running the installer.
+```
+
+中文：
+
+```text
+请从 https://github.com/arneanne/claude-tailscale-guard 安装 claude-tailscale-guard。
+把它克隆到临时文件夹，阅读其中的 INSTALL.md，并按顺序完成每一步。
+运行安装脚本之前，先和我确认要使用的 exit node。
+```
+
+Claude checks your Mac, finds your active exit node, confirms it with you, installs, and verifies. Full steps: [INSTALL.md](INSTALL.md).
 
 ## Install manually
 
 ```bash
-git clone https://github.com/OWNER/claude-tailscale-guard.git
+git clone https://github.com/arneanne/claude-tailscale-guard.git
 cd claude-tailscale-guard
 ./install.sh                      # uses the exit node that is active right now
 ./install.sh --exit-node my-node  # or name it explicitly (Tailscale hostname)
@@ -45,21 +59,3 @@ Installed files live in `~/.claude/hooks/tailscale-guard/`. Change the exit node
 ```
 
 Emergency bypass in a terminal: `command claude`.
-
----
-
-## Instructions for Claude
-
-When a user asks you to install this repository:
-
-1. Confirm the machine is macOS and Tailscale is installed (`/Applications/Tailscale.app`). If not, stop and tell the user.
-2. Clone the repo into a temporary directory (the installer copies what it needs, so the clone can be deleted afterwards).
-3. Find the exit node:
-   - If the user named one, use it.
-   - Otherwise run `/Applications/Tailscale.app/Contents/MacOS/Tailscale status --json` and read the active exit node (`ExitNodeStatus.ID` → matching peer's `HostName`). Tell the user which node you found and confirm it is the one they want.
-   - If none is active, run `tailscale exit-node list`, show the options, and ask the user to choose.
-4. Run `./install.sh --exit-node <NAME>` and show the user its output.
-5. **Warning to give the user before installing:** if the exit node is not active when the install finishes, the current Claude Code session will be closed within seconds. Make sure the exit node is on first.
-6. Tell the user: open a new terminal for the `claude` launch check; uninstall with `~/.claude/hooks/tailscale-guard/uninstall.sh`.
-
-Do not edit `~/.claude/settings.json` by hand — `install.sh` merges the hooks and keeps a backup.
